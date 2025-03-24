@@ -240,7 +240,7 @@ def reporter_node(state: State) -> Command[Literal["supervisor"]]:
         goto="supervisor",
     )
     
-def build_graph(checkpointer=None):
+def build_graph():
     """Build and return the agent workflow graph."""
     builder = StateGraph(State)
     builder.add_edge(START, "planner")
@@ -248,4 +248,4 @@ def build_graph(checkpointer=None):
     builder.add_node("supervisor", supervisor_node)
     builder.add_node("researcher", research_node)
     builder.add_node("reporter", reporter_node)
-    return builder.compile(checkpointer=checkpointer)
+    return builder.compile()

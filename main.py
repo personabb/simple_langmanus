@@ -1,38 +1,31 @@
 from utils import TEAM_MEMBERS
 from graph import build_graph
-from langgraph.checkpoint.memory import MemorySaver
 import logging
 import os
 
 logger = logging.getLogger(__name__)
 
-def main(config = {"configurable": {"thread_id": "12345"}}):
+def main():
     """Main function to run the agent."""
-    #memory = MemorySaver()
-    memory = None
-    graph = build_graph(checkpointer=memory)
 
-    while True:
+    graph = build_graph()
 
-        user_query = input("Enter your query: ")
-        if user_query.lower() in ["exit", "quit"]:
-            print("終了します。")
-            break
+    user_query = input("Enter your query: ")
 
-        result = graph.invoke(
-            {
-                # Constants
-                "TEAM_MEMBERS": TEAM_MEMBERS,
-                # Runtime Variables
-                "messages": [{"role": "user", "content": user_query}],
-            },config
-        )
+    result = graph.invoke(
+        {
+            # Constants
+            "TEAM_MEMBERS": TEAM_MEMBERS,
+            # Runtime Variables
+            "messages": [{"role": "user", "content": user_query}],
+        }
+    )
 
-        print("\n=== Conversation History ===")
-        for message in result["messages"]:
-            role = message.type
-            print(f"\n[{role.upper()}]: {message.content}")
-        print("\n=============================\n")
+    print("\n=== Conversation History ===")
+    for message in result["messages"]:
+        role = message.type
+        print(f"\n[{role.upper()}]: {message.content}")
+    print("\n=============================\n")
 
 
 if __name__ == "__main__":
