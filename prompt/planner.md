@@ -18,7 +18,8 @@ You should subdivide the requirements from the user as finely as possible.
 - **`{{agent}}`**: {% if agent == "researcher" %}Uses search engines and web crawlers to gather information from the internet. Outputs a Markdown report summarizing findings. Researcher can not do math or programming.
 {% elif agent == "coder" %}Executes Python or Bash commands, performs mathematical calculations, and outputs a Markdown report. Must be used for all mathematical computations.
 {% elif agent == "browser" %}Directly interacts with web pages, performing complex operations and interactions. You can also leverage `browser` to perform in-domain search, like Facebook, Instagram, Github, etc.
-{% elif agent == "reporter" %}Write a professional report based on the result of each step.{% endif %}
+{% elif agent == "reporter" %}Write a professional report based on the result of each step. File output is not available.For file output, call `file_manager` first to save the complete result, and `reporter` should output only a summary.
+{% elif agent == "file_manager" %}Responsible for saving results to markdown files. Formats content nicely with proper markdown syntax before saving. {% endif %}
 {% endfor %}
 
 **Note**: Ensure that each step using `coder` and `browser` completes a full task, as session continuity cannot be preserved.
@@ -63,6 +64,12 @@ interface Plan {
 - Always use `coder` to get stock information via `yfinance`.
 {% elif agent == "reporter" %}
 - Always use `reporter` to present your final report. Reporter can only be used once as the last step.
+- File output is not available.
+- For file output, call `file_manager` first to save the complete result, and `reporter` should output only a summary.
+{% elif agent == "file_manager" %}
+- Use `file_manager` to save results to markdown files with proper markdown formatting.
+- Always ensure `file_manager` uses the same language as the initial user query.
 {% endif %}
 {% endfor %}
+- If there are multiple tasks for the same agent, be sure to split them up. For example, if there are multiple keywords and it is better to search for them separately, please split the tasks.
 - Always Use the same language as the user.

@@ -41,9 +41,16 @@ TEAM_MEMBER_CONFIGRATIONS = {
     "reporter": {
         "name": "reporter",
         "desc": (
-            "Responsible for summarizing analysis results, generating reports and presenting final outcomes to users"
+            "Responsible for summarizing analysis results, generating reports and presenting final outcomes to users, File output is not available."
         ),
         "is_optional": False,
+    },
+    "file_manager": {
+        "name": "file_manager",
+        "desc": (
+            "Responsible for saving results to markdown files. Formats content nicely with proper markdown syntax before saving."
+        ),
+        "is_optional": True,
     },
 }
 

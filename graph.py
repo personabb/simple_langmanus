@@ -16,6 +16,7 @@ from utils import initialize_llm, TEAM_MEMBERS, apply_prompt_template, repair_js
 from langgraph.graph import StateGraph, START
 from langgraph.prebuilt import create_react_agent
 from langchain_tavily import TavilySearch, TavilyExtract
+from langchain_community.tools import WriteFileTool
 import os
 
 
@@ -52,6 +53,8 @@ tavily_search_tool = TavilySearch(
 )
 tavily_extract_tool = TavilyExtract()
 
+write_file_tool = WriteFileTool()
+
 # Create agents using configured LLM types
 research_agent = create_react_agent(
     llm,
@@ -59,6 +62,14 @@ research_agent = create_react_agent(
     prompt=lambda state: apply_prompt_template("researcher", state),
     debug=False,
 )
+
+file_manager_agent = create_react_agent(
+    llm,
+    tools=[write_file_tool],
+    prompt=lambda state: apply_prompt_template("file_manager", state),
+    debug=False,
+)
+
 
 
 def research_node(state: State) -> Command[Literal["supervisor"]]:
@@ -171,6 +182,36 @@ def planner_node(state: State) -> Command[Literal["supervisor", "__end__"]]:
         goto=goto,
     )
 
+def file_manager_node(state: State) -> Command[Literal["supervisor"]]:
+    """
+    file_managerノード: 必要に応じて結果をファイルに保存する。
+    """
+    logger.info("\n=== [file_manager Node] file_managerノードが開始されました ===")
+    logger.info("file_managerノードがファイルに結果を保存します。")
+    logger.info(f"--- file_managerの入力メッセージ一覧 (State) ---\n{state.get('messages')}\n---")
+
+    result = file_manager_agent.invoke(state)
+    response_content = result["messages"][-1].content
+
+    logger.info("LLMからの回答を取得しました。JSONとして修正を試みます。")
+
+    response_content = repair_json_output(response_content)
+
+    logger.info(f"--- file_managerの出力 (修正後) ---\n{response_content}\n---")
+    logger.info("=== [file_manager Node] file_managerノードが終了します ===\n")
+
+    return Command(
+        update={
+            "messages": [
+                AIMessage(
+                    content=response_content,
+                    name="file_manager",
+                )
+            ]
+        },
+        goto="supervisor",
+    )
+
 
 def reporter_node(state: State) -> Command[Literal["supervisor"]]:
     """
@@ -210,5 +251,6 @@ def build_graph():
     builder.add_node("planner", planner_node)
     builder.add_node("supervisor", supervisor_node)
     builder.add_node("researcher", research_node)
+    builder.add_node("file_manager", file_manager_node)
     builder.add_node("reporter", reporter_node)
     return builder.compile()
