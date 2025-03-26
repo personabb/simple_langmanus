@@ -11,7 +11,7 @@ from langchain_core.tools import tool
 import json_repair
 from langgraph.types import Command
 
-from utils import initialize_llm, TEAM_MEMBERS, apply_prompt_template, repair_json_output, NAME, MODEL_NAME, TEMPERATURE, TOP_P, API_BASE, API_KEY, API_VERSION
+from utils import initialize_llm, TEAM_MEMBERS, apply_prompt_template, repair_json_output, NAME, MODEL_NAME, TEMPERATURE, API_BASE, API_KEY, API_VERSION
 
 from langgraph.graph import StateGraph, START
 from langgraph.prebuilt import create_react_agent
@@ -44,7 +44,7 @@ class State(MessagesState):
     next: str
     full_plan: str
 
-llm = initialize_llm(name=NAME, model_name=MODEL_NAME, temperature=TEMPERATURE, top_p=TOP_P)
+llm = initialize_llm(name=NAME, model_name=MODEL_NAME, temperature=TEMPERATURE)
 
 # Initialize Tavily Search Tool
 tavily_search_tool = TavilySearch(

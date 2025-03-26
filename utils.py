@@ -18,9 +18,6 @@ MODEL_NAME = os.getenv('MODEL_NAME')
 TEMPERATURE = os.getenv('TEMPERATURE', None)
 if TEMPERATURE:
     TEMPERATURE = float(TEMPERATURE)
-TOP_P = os.getenv('TOP_P', None)
-if TOP_P:
-    TOP_P = float(TOP_P)
 API_BASE = os.getenv('API_BASE')
 API_KEY = os.getenv('API_KEY')
 API_VERSION = os.getenv('API_VERSION')
@@ -128,7 +125,7 @@ def apply_prompt_template(prompt_name: str, state: AgentState) -> list:
     except Exception as e:
         raise ValueError(f"Error applying template {prompt_name}: {e}")
 
-def initialize_llm(name: str, model_name: str, temperature: float, top_p: float = None):
+def initialize_llm(name: str, model_name: str, temperature: float):
     """
     指定されたパラメータを用いて LLM を初期化する関数。
     """
@@ -150,8 +147,7 @@ def initialize_llm(name: str, model_name: str, temperature: float, top_p: float 
         llm = ChatGoogleGenerativeAI(
             model=model_name,
             google_api_key=API_KEY,
-            temperature=temperature,
-            top_p=top_p if top_p else 1.0
+            temperature=temperature
         )
 
 
@@ -171,8 +167,7 @@ def initialize_llm(name: str, model_name: str, temperature: float, top_p: float 
             openai_api_key=api_key,
             openai_api_base=api_endpoint,
             max_tokens=2048,  # CONFIGなどに合わせて調整
-            temperature=temperature,
-            top_p=top_p if top_p else 1.0
+            temperature=temperature
         )
 
     elif name == "xAI":
