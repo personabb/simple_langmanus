@@ -167,3 +167,7 @@ cython_debug/
 arxiv/
 *.sqlite3
 *.png
+*.md
+*.txt
+*.log
+.DS_Store
