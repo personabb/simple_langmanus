@@ -1,1 +1,0 @@
-下記のモデル群において、マルチモーダル性能を調査してください。なおAPI利用に限ります\n\nモデルは下記です。\n\n----\n\ngemini-2.0-flash\ngemini-1.5-pro\ngpt-4o-mini\ngpt-4o\no3-mini\nclaude 3.7 sonnet\n\n----\n\n確認してほしい拡張子は下記です。\n----\n\njpg, png, gif, webp\nheic形式\nPDF、docs、 xlsxl、pptx、CSV、TSV、TEXT、HTML、CSS、JSON\n\n----\nそれぞれAPIで利用することを前提に、そもそも入力ができるかどうか。そして入力した場合の相対的な性能差を調査してください。\n出力はoutputフォルダに格納してください。
