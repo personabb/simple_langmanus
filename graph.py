@@ -113,8 +113,6 @@ def supervisor_node(state: State) -> Command[Literal[*TEAM_MEMBERS, "__end__"]]:
     logger.info(f"--- Supervisorの入力メッセージ一覧 (State) ---\n{state.get('messages')}\n---")
 
     messages = apply_prompt_template("supervisor", state)
-    # メッセージの加工（各エージェントの出力にフォーマットを付ける）
-    #messages = deepcopy(messages)
     for message in messages:
         if isinstance(message, BaseMessage) and message.name in TEAM_MEMBERS:
             message.content = RESPONSE_FORMAT.format(message.name, message.content)

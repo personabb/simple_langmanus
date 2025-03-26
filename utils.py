@@ -18,9 +18,9 @@ MODEL_NAME = os.getenv('MODEL_NAME')
 TEMPERATURE = os.getenv('TEMPERATURE', None)
 if TEMPERATURE:
     TEMPERATURE = float(TEMPERATURE)
-API_BASE = os.getenv('API_BASE')
-API_KEY = os.getenv('API_KEY')
-API_VERSION = os.getenv('API_VERSION')
+API_BASE = os.getenv('API_BASE', None)
+API_KEY = os.getenv('API_KEY', None)
+API_VERSION = os.getenv('API_VERSION', None)
 os.environ["TAVILY_API_KEY"] = os.getenv('TAVILY_API_KEY')
 
 logger = logging.getLogger(__name__)
@@ -84,23 +84,6 @@ env = Environment(
 )
 
 
-def get_prompt_template(prompt_name: str) -> str:
-    """
-    Load and return a prompt template using Jinja2.
-
-    Args:
-        prompt_name: Name of the prompt template file (without .md extension)
-
-    Returns:
-        The template string with proper variable substitution syntax
-    """
-    try:
-        template = env.get_template(f"prompt/{prompt_name}.md")
-        return template.render()
-    except Exception as e:
-        raise ValueError(f"Error loading template {prompt_name}: {e}")
-
-
 def apply_prompt_template(prompt_name: str, state: AgentState) -> list:
     """
     Apply template variables to a prompt template and return formatted messages.
@@ -161,12 +144,11 @@ def initialize_llm(name: str, model_name: str, temperature: float):
         if api_key == "":
             raise ValueError("OpenAI API Key が設定されていません。")
 
-        from langchain.chat_models import ChatOpenAI  # ここだけ例としてインポートを追加
+        from langchain_openai import ChatOpenAI  
         llm = ChatOpenAI(
             model=model_name,
             openai_api_key=api_key,
             openai_api_base=api_endpoint,
-            max_tokens=2048,  # CONFIGなどに合わせて調整
             temperature=temperature
         )
 
@@ -175,7 +157,6 @@ def initialize_llm(name: str, model_name: str, temperature: float):
         llm = ChatXAI(
             model=model_name,
             api_key=API_KEY,
-            max_tokens=2048,  # CONFIGなどに合わせて調整
             temperature=temperature,
         )
     else:

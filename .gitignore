@@ -172,3 +172,5 @@ arxiv/
 *.log
 .DS_Store
 !README.md
+!output-o3-0326.log
+!リトルプラネットレビュー-o3.md
